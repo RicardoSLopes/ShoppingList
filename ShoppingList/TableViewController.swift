@@ -117,6 +117,7 @@ class TableViewController: UITableViewController {
     
     // MARK: - IBActions
     @IBAction func addItem(_ sender: Any) {
+        showAlertForItem(nil)
     }
     
     // MARK: - Table view data source
@@ -136,5 +137,17 @@ class TableViewController: UITableViewController {
         cell.detailTextLabel?.text = "\(shoppingItem.quantity)"
         
         return cell
+    }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let shoppingItem = shoppingList[indexPath.row]
+        showAlertForItem(shoppingItem)
+    }
+    
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            let shoppingItem = shoppingList[indexPath.row]
+            firestore.collection(collection).document(shoppingItem.id).delete()
+        }
     }
 }
